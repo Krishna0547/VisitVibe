@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VisitVibe — Explore the World</title>
+<meta name="description" content="VisitVibe is a view-only world travel discovery website for places, history, culture and special foods.">
+
+<!-- Premium fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --primary:#0b63f6;
+  --primary2:#12b886;
+  --ink:#101828;
+  --text:#344054;
+  --muted:#667085;
+  --bg:#f6f8fb;
+  --card:#fff;
+  --line:#e4e7ec;
+  --soft:#eef4ff;
+  --shadow:0 18px 50px rgba(16,24,40,.10);
+  --radius:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"DM Sans",sans-serif;
+  background:var(--bg);color:var(--ink);line-height:1.6;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+img{display:block;width:100%;object-fit:cover}
+a{text-decoration:none;color:inherit}
+
+.navbar{
+  position:fixed;top:0;left:0;width:100%;z-index:1000;
+  background:rgba(255,255,255,.88);backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(16,24,40,.07)
+}
+.nav-container{
+  max-width:1280px;margin:auto;padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;gap:20px
+}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:25px}
+.logo-mark{
+  width:43px;height:43px;border-radius:14px;display:grid;place-items:center;
+  color:white;background:linear-gradient(135deg,var(--primary),var(--primary2));
+  box-shadow:0 8px 22px rgba(11,99,246,.25)
+}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-btn,.profile-btn{
+  border:0;background:transparent;padding:10px 13px;border-radius:11px;
+  color:var(--text);font-weight:700
+}
+.nav-btn:hover,.profile-btn:hover{background:var(--soft);color:var(--primary)}
+.menu-btn{display:none;border:0;background:none;font-size:27px}
+
+.hero{
+  min-height:760px;margin-top:71px;position:relative;overflow:hidden;
+  color:#fff;display:flex;align-items:center
+}
+.hero-slide{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .9s ease}
+.hero-slide.active{opacity:1}
+.hero-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(3,14,31,.90),rgba(3,14,31,.38)),
+             linear-gradient(0deg,rgba(0,0,0,.42),transparent 55%)
+}
+.hero-content{position:relative;z-index:2;max-width:1280px;width:100%;margin:auto;padding:80px 24px}
+.greeting{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;
+  background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.23);
+  backdrop-filter:blur(10px);font-weight:700;margin-bottom:22px
+}
+.hero h1{
+  font-family:"Playfair Display",serif;font-size:clamp(50px,7vw,88px);
+  line-height:1.02;max-width:900px;margin-bottom:22px
+}
+.hero h1 span{color:#8ee8cf}
+.hero p{max-width:720px;font-size:19px;color:rgba(255,255,255,.87);margin-bottom:32px}
+.search-box{
+  max-width:760px;background:#fff;padding:7px;border-radius:16px;
+  display:flex;box-shadow:0 20px 55px rgba(0,0,0,.27)
+}
+.search-box input{flex:1;min-width:0;border:0;outline:0;padding:15px;color:var(--ink)}
+.search-box button{
+  border:0;border-radius:11px;background:var(--primary);color:#fff;padding:0 24px;font-weight:800
+}
+.search-box button:hover{background:#0648bd}
+.hero-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.hero-pill{
+  padding:8px 12px;border:1px solid rgba(255,255,255,.2);
+  border-radius:999px;background:rgba(255,255,255,.10);font-size:13px
+}
+.hero-dots{position:absolute;z-index:3;bottom:30px;left:50%;transform:translateX(-50%);display:flex;gap:7px}
+.hero-dot{width:34px;height:5px;border-radius:8px;background:rgba(255,255,255,.38)}
+.hero-dot.active{background:#fff}
+
+.section{max-width:1280px;margin:auto;padding:85px 24px}
+.section-header{display:flex;justify-content:space-between;align-items:end;gap:25px;margin-bottom:32px}
+.section-label{font-size:12px;letter-spacing:1.7px;text-transform:uppercase;font-weight:800;color:var(--primary);margin-bottom:7px}
+.section h2{font-family:"Playfair Display",serif;font-size:42px;line-height:1.12}
+.section-header p{max-width:650px;color:var(--muted)}
+
+.continents{background:#fff}
+.continent-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:15px}
+.continent-card{
+  height:190px;border-radius:var(--radius);overflow:hidden;position:relative;
+  color:#fff;cursor:pointer;box-shadow:var(--shadow)
+}
+.continent-card img{position:absolute;inset:0;height:100%;transition:transform .45s}
+.continent-card:hover img{transform:scale(1.07)}
+.continent-card:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 28%,rgba(0,0,0,.78))}
+.continent-info{position:absolute;z-index:2;bottom:17px;left:17px}
+.continent-info h3{font-size:20px}
+.continent-info span{font-size:12px;opacity:.85}
+
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.card{
+  background:var(--card);border-radius:var(--radius);overflow:hidden;
+  box-shadow:0 7px 24px rgba(16,24,40,.07);border:1px solid rgba(16,24,40,.05);
+  transition:.25s
+}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow)}
+.card-image{height:220px;position:relative;overflow:hidden}
+.card-image img{height:100%;transition:.4s}
+.card:hover .card-image img{transform:scale(1.05)}
+.card-badge{
+  position:absolute;left:13px;bottom:13px;background:rgba(255,255,255,.93);
+  padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800
+}
+.favorite{
+  position:absolute;right:13px;top:13px;width:39px;height:39px;border:0;border-radius:50%;
+  background:rgba(255,255,255,.94);font-size:19px
+}
+.favorite.active{color:#e11d48}
+.card-body{padding:19px}
+.card-location{font-size:12px;color:var(--muted);margin-bottom:5px}
+.card h3{font-size:21px;margin-bottom:5px}
+.rating{color:#f59e0b;font-weight:800;font-size:13px;margin-bottom:8px}
+.card-desc{font-size:14px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-action{
+  width:100%;border:0;background:var(--soft);color:var(--primary);font-weight:800;
+  border-radius:11px;padding:11px;margin-top:15px
+}
+.card-action:hover{background:var(--primary);color:#fff}
+
+.explore{background:#f6f8fb}
+.filters{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:20px}
+.filter{
+  border:1px solid var(--line);background:#fff;color:var(--text);
+  border-radius:999px;padding:9px 14px;font-weight:700
+}
+.filter.active,.filter:hover{background:var(--primary);color:#fff;border-color:var(--primary)}
+.count{color:var(--muted);font-size:13px;margin:0 0 18px}
+
+.food-section{background:#fff}
+.food-card .card-image{height:200px}
+.food-kcal{display:inline-block;margin:4px 0 9px;padding:5px 9px;border-radius:999px;background:#ecfdf3;color:#087443;font-size:12px;font-weight:800}
+.food-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.food-tags span{font-size:11px;padding:5px 8px;border-radius:999px;background:#f2f4f7;color:#475467}
+
+.about{background:#fff}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:55px;align-items:center}
+.about-image{height:500px;border-radius:28px;overflow:hidden}
+.about-image img{height:100%}
+.about-text h2{font-family:"Playfair Display",serif;font-size:48px;margin-bottom:18px}
+.about-text p{color:var(--muted);margin-bottom:17px}
+.feature-list{display:grid;gap:14px;margin-top:24px}
+.feature{display:flex;gap:13px}
+.feature-icon{min-width:42px;height:42px;border-radius:13px;background:var(--soft);color:var(--primary);display:grid;place-items:center}
+
+.newsletter{
+  max-width:1230px;margin:75px auto;padding:58px 25px;border-radius:30px;text-align:center;
+  color:#fff;background:linear-gradient(135deg,#0757d5,#087c68)
+}
+.newsletter h2{font-family:"Playfair Display",serif;font-size:40px}
+.newsletter p{opacity:.9;margin:8px auto 23px;max-width:620px}
+.newsletter-form{display:flex;max-width:560px;margin:auto;background:#fff;padding:6px;border-radius:13px}
+.newsletter-form input{flex:1;border:0;outline:0;padding:12px}
+.newsletter-form button{border:0;background:#101828;color:#fff;border-radius:9px;padding:0 18px;font-weight:800}
+
+footer{background:#101828;color:#fff;padding:60px 24px 25px}
+.footer-grid{max-width:1280px;margin:auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px}
+.footer-brand p{color:#98a2b3;margin-top:13px;max-width:420px}
+.footer-column h4{margin-bottom:13px}
+.footer-column button{display:block;background:none;border:0;color:#98a2b3;padding:5px 0}
+.footer-column button:hover{color:#fff}
+.footer-bottom{max-width:1280px;margin:55px auto 0;padding:34px 20px 12px;border-top:1px solid #344054;color:#d0d5dd;text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px}.footer-bottom p{margin:0;max-width:1100px;font-size:clamp(18px,1.55vw,25px);line-height:1.55;font-weight:500}.footer-bottom p strong{color:#fff;font-size:clamp(21px,1.8vw,30px);font-weight:800}.footer-bottom a{color:#fff!important;font-size:clamp(18px,1.45vw,24px);font-weight:700;text-decoration:underline;text-underline-offset:5px}.footer-bottom p:last-child{color:#e4e7ec;font-size:clamp(17px,1.35vw,22px);font-weight:600}@media(max-width:700px){.footer-bottom{margin-top:38px;padding:28px 12px 10px;gap:14px}.footer-bottom p{font-size:18px}.footer-bottom p strong{font-size:20px}.footer-bottom a{font-size:17px;word-break:break-word}.footer-bottom p:last-child{font-size:16px}}
+
+.modal{
+  display:none;position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.72);
+  padding:20px;overflow:auto
+}
+.modal.show{display:flex;align-items:center;justify-content:center}
+.modal-box{
+  width:min(1050px,100%);background:#fff;border-radius:25px;overflow:hidden;
+  max-height:92vh;overflow-y:auto;position:relative
+}
+.close-modal{
+  position:absolute;right:16px;top:16px;z-index:5;width:42px;height:42px;border:0;
+  border-radius:50%;background:#fff;box-shadow:0 5px 20px rgba(0,0,0,.15);font-size:23px
+}
+.details-hero{height:390px;position:relative}
+.details-hero img{height:100%}
+.details-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 30%,rgba(0,0,0,.8))}
+.details-title{position:absolute;z-index:2;left:32px;bottom:28px;color:#fff}
+.details-title h2{font-family:"Playfair Display",serif;font-size:45px}
+.details-content{padding:32px}
+.details-intro{font-size:18px;margin-bottom:28px;color:var(--text)}
+.details-layout{display:grid;grid-template-columns:1.5fr 1fr;gap:34px}
+.detail-section{margin-bottom:26px}
+.detail-section h3{font-size:22px;margin-bottom:8px}
+.detail-section p,.detail-section li{color:var(--muted)}
+.detail-section ul{padding-left:20px}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+.info-box{padding:14px;background:#f8fafc;border:1px solid var(--line);border-radius:13px}
+.info-box strong{display:block;margin-bottom:3px}
+.info-box span{font-size:13px;color:var(--muted)}
+.map-placeholder{
+  min-height:220px;border-radius:17px;background:
+  linear-gradient(rgba(11,99,246,.08),rgba(11,99,246,.08)),
+  repeating-linear-gradient(45deg,#e9eef5,#e9eef5 10px,#f7f9fc 10px,#f7f9fc 20px);
+  display:grid;place-items:center;text-align:center;color:var(--muted);padding:20px
+}
+
+.toast{
+  position:fixed;right:22px;bottom:22px;z-index:5000;background:#101828;color:#fff;
+  padding:13px 18px;border-radius:11px;transform:translateY(100px);opacity:0;transition:.3s
+}
+.toast.show{transform:translateY(0);opacity:1}
+.empty{grid-column:1/-1;text-align:center;padding:60px 20px;background:#fff;border-radius:18px;color:var(--muted)}
+.empty h3{color:var(--ink);margin-bottom:5px}
+
+@media(max-width:1100px){
+  .grid{grid-template-columns:repeat(3,1fr)}
+  .continent-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:820px){
+  .nav-links{display:none;position:absolute;top:71px;left:0;width:100%;padding:12px;background:#fff;flex-direction:column;align-items:stretch;box-shadow:var(--shadow)}
+  .nav-links.show{display:flex}
+  .menu-btn{display:block}
+  .nav-user{display:none}
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .about-grid,.details-layout{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .section-header{display:block}
+  .section-header p{margin-top:10px}
+}
+@media(max-width:560px){
+  .section{padding:60px 18px}
+  .grid,.continent-grid,.footer-grid{grid-template-columns:1fr}
+  .hero{min-height:680px}
+  .hero h1{font-size:47px}
+  .hero p{font-size:16px}
+  .search-box{display:block;background:#fff}
+  .search-box input{width:100%;margin-bottom:7px}
+  .search-box button{width:100%;height:48px}
+  .newsletter{margin:45px 18px;padding:40px 20px}
+  .newsletter-form{display:block}
+  .newsletter-form input{width:100%;margin-bottom:5px}
+  .newsletter-form button{width:100%;height:45px}
+  .details-hero{height:300px}
+  .details-title{left:20px;bottom:20px}
+  .details-title h2{font-size:33px}
+  .details-content{padding:22px}
+  .info-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <a class="logo" href="#home"><span class="logo-mark">🌍</span>VisitVibe</a>
+    <div class="nav-links" id="navLinks">
+      <button class="nav-btn" onclick="scrollToSection('home')">Home</button>
+      <button class="nav-btn" onclick="scrollToSection('continents')">Continents</button>
+      <button class="nav-btn" onclick="scrollToSection('explore')">Tourist Places</button>
+      <button class="nav-btn" onclick="scrollToSection('foods')">Food</button>
+      <button class="nav-btn" onclick="showFavorites()">Favorites</button>
+      <button class="nav-btn" onclick="scrollToSection('about')">About</button>
+    </div>
+    <div class="nav-user"><button class="profile-btn" onclick="showProfile()">👤 Profile</button></div>
+    <button class="menu-btn" onclick="toggleMenu()">☰</button>
+  </div>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-slide active" style="background-image:url('https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1800&q=85')"></div>
+  <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1800&q=85')"></div>
+  <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1800&q=85')"></div>
+  <div class="hero-slide" style="background-image:url('https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=1800&q=85')"></div>
+  <div class="hero-overlay"></div>
+
+  <div class="hero-content">
+    <div class="greeting" id="greeting">✨ Welcome to VisitVibe</div>
+    <h1>See the world.<br><span>Taste the world.</span></h1>
+    <p>Explore remarkable tourist places, their history and culture, then discover the special foods that make each destination unforgettable.</p>
+    <div class="search-box">
+      <input id="heroSearch" placeholder="Search a place, country or food..." onkeydown="if(event.key==='Enter') globalSearch()">
+      <button onclick="globalSearch()">🔎 Search</button>
+    </div>
+    <div class="hero-meta">
+      <span class="hero-pill">🌍 Worldwide discovery</span>
+      <span class="hero-pill">🏛️ History & culture</span>
+      <span class="hero-pill">🍜 Global food guide</span>
+      <span class="hero-pill">👁️ View-only experience</span>
+    </div>
+  </div>
+
+  <div class="hero-dots" id="heroDots">
+    <div class="hero-dot active"></div><div class="hero-dot"></div>
+    <div class="hero-dot"></div><div class="hero-dot"></div>
+  </div>
+</section>
+
+<section class="section continents" id="continents">
+  <div class="section-header">
+    <div><div class="section-label">Discover the planet</div><h2>Explore by Continent</h2></div>
+    <p>Move from continent to continent and discover famous cities, ancient landmarks, natural wonders and local flavours.</p>
+  </div>
+  <div class="continent-grid" id="continentGrid"></div>
+</section>
+
+<section class="section" id="trending">
+  <div class="section-header">
+    <div><div class="section-label">World highlights</div><h2>Trending Places</h2></div>
+    <p>A curated starting point from different regions. Every card opens a detailed view with history, special features and practical information.</p>
+  </div>
+  <div class="grid" id="trendingGrid"></div>
+</section>
+
+<section class="section explore" id="explore">
+  <div class="section-header">
+    <div><div class="section-label">Worldwide places</div><h2>Tourist Places</h2></div>
+    <p>Search and filter the destination library by continent or travel category.</p>
+  </div>
+  <div class="filters" id="continentFilters"></div>
+  <div class="filters" id="categoryFilters"></div>
+  <div class="count" id="placeCount"></div>
+  <div class="grid" id="destinationGrid"></div>
+</section>
+
+<section class="section food-section" id="foods">
+  <div class="section-header">
+    <div><div class="section-label">Taste the world</div><h2>Special Foods</h2></div>
+    <p>Discover iconic dishes and drinks from different countries, with their origin, special character and key food information.</p>
+  </div>
+  <div class="filters" id="foodContinentFilters"></div>
+  <div class="filters" id="foodCategoryFilters"></div>
+  <div class="count" id="foodCount"></div>
+  <div class="grid" id="foodGrid"></div>
+</section>
+
+<section class="section favorites-section" id="favoritesSection">
+  <div class="section-header">
+    <div><div class="section-label">Your collection</div><h2>Favorite Places</h2></div>
+    <p>Save places you want to revisit. Favorites are stored only in this browser for viewing convenience.</p>
+  </div>
+  <div class="grid" id="favoritesGrid"></div>
+</section>
+
+<section class="section about" id="about">
+  <div class="about-grid">
+    <div class="about-image">
+      <img src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?auto=format&fit=crop&w=1200&q=85" alt="World travel">
+    </div>
+    <div class="about-text">
+      <div class="section-label">About VisitVibe</div>
+      <h2>Your window to places and flavours.</h2>
+      <p>VisitVibe is designed as a simple visual discovery website: browse destinations, learn why a place is special, understand its history and discover food connected to different cultures.</p>
+      <p>This version is intentionally view-only. There is no booking, payment, database or real account system. VisitVibe is created for learning, exploration and visual reference, so visitors can discover destinations and foods without creating an account. The information is presented in a simple, friendly format for students, travellers and anyone curious about world cultures.</p>
+      <div class="feature-list">
+        <div class="feature"><div class="feature-icon">🌍</div><div><strong>Global discovery</strong><p>Places and foods are organised across the world's major regions.</p></div></div>
+        <div class="feature"><div class="feature-icon">📚</div><div><strong>History & culture</strong><p>Open any place to read its story, highlights and travel notes.</p></div></div>
+        <div class="feature"><div class="feature-icon">🍴</div><div><strong>Food discovery</strong><p>Explore special dishes, drinks, origins and signature ingredients.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="newsletter">
+  <div class="section-label">Stay connected</div>
+  <h2>Subscribe</h2>
+  <p>Keep exploring VisitVibe and discover destinations, cultures, history and special foods from around the world.</p>
+  <div class="newsletter-form">
+    <input id="newsletterEmail" type="email" placeholder="Enter your email">
+    <button onclick="demoSubscribe()">Subscribe</button>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo"><span class="logo-mark">🌍</span>VisitVibe</div>
+      <p>Explore destinations, history, culture and special foods from around the world in one visual travel discovery experience.</p>
+    </div>
+    <div class="footer-column"><h4>Explore</h4>
+      <button onclick="scrollToSection('home')">Home</button>
+      <button onclick="scrollToSection('continents')">Continents</button>
+      <button onclick="scrollToSection('explore')">Tourist Places</button>
+      <button onclick="scrollToSection('foods')">Food</button>
+    </div>
+    <div class="footer-column"><h4>Categories</h4>
+      <button onclick="filterCategory('Historical')">Historical</button>
+      <button onclick="filterCategory('Beach')">Beach</button>
+      <button onclick="filterCategory('Adventure')">Adventure</button>
+      <button onclick="filterCategory('City-life')">City-life</button>
+    </div>
+    <div class="footer-column"><h4>VisitVibe</h4>
+      <button onclick="showFavorites()">Favorites</button>
+      <button onclick="showProfile()">Profile</button>
+      <button onclick="showToast('VisitVibe is made for viewing and learning purposes only.')">Web Rules</button>
+      <button onclick="scrollToSection('about')">About VisitVibe</button>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>Created by <strong>Krishna Teja</strong> · VisitVibe is made for viewing and learning purposes only.</p>
+    <p>© 2026 VisitVibe · Explore the world, one place and one plate at a time. 🌎</p>
+  </div>
+</footer>
+
+<div class="modal" id="detailsModal">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeModal('detailsModal')">×</button>
+    <div id="detailsContent"></div>
+  </div>
+</div>
+
+<div class="modal" id="profileModal">
+  <div class="modal-box" style="width:min(500px,100%);padding:34px">
+    <button class="close-modal" onclick="closeModal('profileModal')">×</button>
+    <div class="section-label">VisitVibe profile</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:34px;margin-bottom:10px">View-only mode</h2>
+    <p style="color:var(--muted)">No login or personal data is required. Favorites are stored locally in your browser.</p>
+    <button class="card-action" onclick="closeModal('profileModal')">Continue Exploring</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================
+   VISITVIBE DATA
+   This is a browser-only demo catalogue. Add more objects to
+   the arrays to expand the worldwide catalogue without changing
+   the UI.
+========================================================= */
+
+const destinations = [
+{id:1,name:"Taj Mahal",country:"India",continent:"Asia",category:"Historical",rating:4.8,bestTime:"October to March",language:"Hindi, English and regional languages",currency:"Indian Rupee (INR)",image:"https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1400&q=85",description:"An iconic marble monument of love in Agra.",history:"The Taj Mahal was commissioned by Mughal emperor Shah Jahan in memory of Mumtaz Mahal. Its white marble architecture, gardens and detailed decoration have made it one of the world's most recognised monuments.",special:"The monument is famous for its symmetrical design, white marble, delicate inlay work and changing appearance under different daylight.",attractions:["Main mausoleum", "reflecting pool", "Charbagh gardens", "Agra Fort nearby."],experience:"An iconic marble monument of love in Agra.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:2,name:"Kyoto",country:"Japan",continent:"Asia",category:"Featured",rating:4.8,bestTime:"Spring and autumn",language:"Japanese",currency:"Japanese Yen (JPY)",image:"https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=1400&q=85",description:"A historic Japanese city known for temples, gardens and traditional culture.",history:"Kyoto served as Japan's imperial capital for centuries and developed a rich tradition of temples, shrines, gardens, crafts and performing arts.",special:"Visitors can experience traditional architecture, seasonal scenery, tea culture and historic neighbourhoods.",attractions:["Fushimi Inari", "Kinkaku-ji", "Arashiyama", "Gion."],experience:"A historic Japanese city known for temples, gardens and traditional culture.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:3,name:"Great Wall of China",country:"China",continent:"Asia",category:"Historical",rating:4.8,bestTime:"Spring and autumn",language:"Mandarin Chinese",currency:"Chinese Yuan (CNY)",image:"https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=1400&q=85",description:"A vast series of historic fortifications crossing northern China.",history:"Different sections of the Great Wall were built and rebuilt over many centuries by successive Chinese states and dynasties for defence and border control.",special:"Its scale, mountain landscapes and long history make it a major cultural landmark.",attractions:["Mutianyu", "Badaling", "Jinshanling and mountain viewpoints."],experience:"A vast series of historic fortifications crossing northern China.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:4,name:"Bali",country:"Indonesia",continent:"Asia",category:"Beach",rating:4.8,bestTime:"April to October",language:"Indonesian and Balinese",currency:"Indonesian Rupiah (IDR)",image:"https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1400&q=85",description:"An island destination combining temples, beaches, rice terraces and arts.",history:"Bali developed a distinctive cultural identity influenced by Hindu traditions, local kingdoms, agriculture and maritime trade.",special:"The island is known for temples, ceremonies, dance, crafts, volcanic landscapes and terraced farming.",attractions:["Ubud", "Uluwatu Temple", "Tanah Lot", "rice terraces", "beaches."],experience:"An island destination combining temples, beaches, rice terraces and arts.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:5,name:"Petra",country:"Jordan",continent:"Asia",category:"Historical",rating:4.8,bestTime:"March to May and September to November",language:"Arabic",currency:"Jordanian Dinar (JOD)",image:"https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1400&q=85",description:"An ancient city carved into rose-coloured sandstone cliffs.",history:"Petra was a major centre of the Nabataean civilisation and developed as an important trading city connecting Arabia, the Mediterranean and Asia.",special:"Its rock-cut architecture and dramatic desert setting give Petra a distinctive appearance.",attractions:["The Siq", "Treasury", "Monastery", "Royal Tombs."],experience:"An ancient city carved into rose-coloured sandstone cliffs.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:6,name:"Eiffel Tower",country:"France",continent:"Europe",category:"Historical",rating:4.8,bestTime:"April to October",language:"French",currency:"Euro (EUR)",image:"https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1400&q=85",description:"Paris's famous iron landmark overlooking the French capital.",history:"The Eiffel Tower was constructed for the 1889 Exposition Universelle in Paris and later became one of the city's defining symbols.",special:"Its iron lattice structure and views over Paris make it a major attraction.",attractions:["Trocadéro", "Seine River", "Champ de Mars", "city viewpoints."],experience:"Paris's famous iron landmark overlooking the French capital.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:7,name:"Colosseum",country:"Italy",continent:"Europe",category:"Historical",rating:4.8,bestTime:"March to May and September to October",language:"Italian",currency:"Euro (EUR)",image:"https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=1400&q=85",description:"An ancient Roman amphitheatre in the heart of Rome.",history:"Construction began under Emperor Vespasian and was completed under Titus in the first century CE. The amphitheatre hosted public spectacles in ancient Rome.",special:"It is an important surviving example of Roman engineering and monumental architecture.",attractions:["Arena", "underground structures", "Roman Forum", "Palatine Hill."],experience:"An ancient Roman amphitheatre in the heart of Rome.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:8,name:"Santorini",country:"Greece",continent:"Europe",category:"Featured",rating:4.8,bestTime:"April to October",language:"Greek",currency:"Euro (EUR)",image:"https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=1400&q=85",description:"A Greek island known for white buildings, caldera views and sunsets.",history:"Santorini was shaped by major volcanic activity, including a large eruption in antiquity that influenced the island's landscape and archaeology.",special:"Its cliffside villages, volcanic caldera and Aegean Sea views create a distinctive setting.",attractions:["Oia", "Fira", "caldera", "Akrotiri archaeological site."],experience:"A Greek island known for white buildings, caldera views and sunsets.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:9,name:"Swiss Alps",country:"Switzerland",continent:"Europe",category:"Featured",rating:4.8,bestTime:"Year-round depending on activity",language:"German, French, Italian, Romansh",currency:"Swiss Franc (CHF)",image:"https://images.unsplash.com/photo-1531366936337-7c912a4589a7?auto=format&fit=crop&w=1400&q=85",description:"Mountain landscapes with alpine villages, lakes and dramatic peaks.",history:"The Alps have shaped Swiss settlement, trade, agriculture and tourism for centuries.",special:"The region offers scenic mountain railways, hiking landscapes, winter sports and alpine culture.",attractions:["Zermatt", "Jungfraujoch", "Interlaken", "mountain railways."],experience:"Mountain landscapes with alpine villages, lakes and dramatic peaks.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:10,name:"Pyramids of Giza",country:"Egypt",continent:"Africa",category:"Historical",rating:4.8,bestTime:"October to April",language:"Arabic",currency:"Egyptian Pound (EGP)",image:"https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1400&q=85",description:"Ancient pyramids and the Great Sphinx near Cairo.",history:"The Giza pyramid complex was built during Egypt's Old Kingdom and includes the Great Pyramid, built for Pharaoh Khufu, along with other monuments.",special:"The site demonstrates the scale and engineering capabilities of ancient Egyptian civilisation.",attractions:["Great Pyramid", "Sphinx", "Khafre and Menkaure pyramids."],experience:"Ancient pyramids and the Great Sphinx near Cairo.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:11,name:"Serengeti National Park",country:"Tanzania",continent:"Africa",category:"Adventure",rating:4.8,bestTime:"June to October",language:"Swahili and English",currency:"Tanzanian Shilling (TZS)",image:"https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1400&q=85",description:"A vast East African ecosystem famous for wildlife and grasslands.",history:"The Serengeti landscape has long supported pastoral communities and wildlife, and it became internationally known through conservation and safari tourism.",special:"It is renowned for large wildlife populations and seasonal animal movements.",attractions:["Safari drives", "savannahs", "wildlife viewing", "migration areas."],experience:"A vast East African ecosystem famous for wildlife and grasslands.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:12,name:"Victoria Falls",country:"Zambia / Zimbabwe",continent:"Africa",category:"Adventure",rating:4.8,bestTime:"February to May for high water",language:"English and local languages",currency:"Zambian Kwacha / Zimbabwean currency systems",image:"https://images.unsplash.com/photo-1547036967-23d11aacaee0?auto=format&fit=crop&w=1400&q=85",description:"A spectacular waterfall on the Zambezi River.",history:"The waterfall has long been known to local communities and was introduced to wider European audiences through David Livingstone's 1855 visit.",special:"The broad curtain of falling water and surrounding river landscape create a dramatic natural attraction.",attractions:["Waterfall viewpoints", "Zambezi River", "surrounding national parks."],experience:"A spectacular waterfall on the Zambezi River.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:13,name:"Table Mountain",country:"South Africa",continent:"Africa",category:"Featured",rating:4.8,bestTime:"October to April",language:"English, Afrikaans and isiXhosa",currency:"South African Rand (ZAR)",image:"https://images.unsplash.com/photo-1576485375217-d6a95e34d043?auto=format&fit=crop&w=1400&q=85",description:"A flat-topped mountain overlooking Cape Town.",history:"Table Mountain has been a prominent landmark for communities around the Cape for centuries and became a major feature of the modern city.",special:"Its distinctive flat summit offers panoramic views of Cape Town, coastline and surrounding mountains.",attractions:["Cableway", "hiking trails", "viewpoints", "Cape Peninsula."],experience:"A flat-topped mountain overlooking Cape Town.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:14,name:"Statue of Liberty",country:"United States",continent:"North America",category:"Featured",rating:4.8,bestTime:"April to October",language:"English",currency:"US Dollar (USD)",image:"https://images.unsplash.com/photo-1534430480872-3498386e7856?auto=format&fit=crop&w=1400&q=85",description:"A famous New York harbour monument and symbol of welcome.",history:"The statue was a gift from France to the United States and was dedicated in 1886.",special:"Its location in New York Harbor and historical symbolism make it a major landmark.",attractions:["Liberty Island", "museum", "harbour views", "nearby Ellis Island."],experience:"A famous New York harbour monument and symbol of welcome.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:15,name:"Grand Canyon",country:"United States",continent:"North America",category:"Adventure",rating:4.8,bestTime:"Spring and autumn",language:"English",currency:"US Dollar (USD)",image:"https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?auto=format&fit=crop&w=1400&q=85",description:"A vast canyon landscape carved by the Colorado River.",history:"The canyon records a long geological history and has deep cultural significance for Indigenous peoples of the region.",special:"Layered rock formations, immense scale and changing light make it one of the world's best-known landscapes.",attractions:["South Rim", "viewpoints", "hiking routes", "Colorado River."],experience:"A vast canyon landscape carved by the Colorado River.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:16,name:"Chichen Itza",country:"Mexico",continent:"North America",category:"Historical",rating:4.8,bestTime:"November to April",language:"Spanish and Mayan languages",currency:"Mexican Peso (MXN)",image:"https://images.unsplash.com/photo-1518638150340-f706e86654de?auto=format&fit=crop&w=1400&q=85",description:"A major Maya archaeological site on Mexico's Yucatán Peninsula.",history:"Chichen Itza developed as an important Maya city and includes monumental architecture associated with astronomy, religion and civic life.",special:"El Castillo and the site's astronomical and architectural features are especially notable.",attractions:["El Castillo", "Great Ball Court", "Temple of Warriors."],experience:"A major Maya archaeological site on Mexico's Yucatán Peninsula.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:17,name:"Banff National Park",country:"Canada",continent:"North America",category:"Adventure",rating:4.8,bestTime:"Summer for hiking; winter for snow activities",language:"English and French",currency:"Canadian Dollar (CAD)",image:"https://images.unsplash.com/photo-1509644851169-2acc08aa25b5?auto=format&fit=crop&w=1400&q=85",description:"A Canadian Rocky Mountain destination with lakes and alpine scenery.",history:"Established in 1885, Banff became Canada's first national park and helped establish the region as an important protected landscape and tourism destination.",special:"Turquoise lakes, mountain peaks, forests and wildlife define its scenery.",attractions:["Lake Louise", "Moraine Lake", "Banff town", "mountain trails."],experience:"A Canadian Rocky Mountain destination with lakes and alpine scenery.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:18,name:"Machu Picchu",country:"Peru",continent:"South America",category:"Historical",rating:4.8,bestTime:"April to October",language:"Spanish and Quechua",currency:"Peruvian Sol (PEN)",image:"https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=1400&q=85",description:"An Inca-era mountain citadel high in the Andes.",history:"Machu Picchu was built during the Inca period and is associated with the wider Inca civilisation of the Andes.",special:"Its stone architecture, terraces and dramatic mountain location make it an iconic archaeological destination.",attractions:["Citadel", "terraces", "Sun Temple", "mountain viewpoints."],experience:"An Inca-era mountain citadel high in the Andes.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:19,name:"Christ the Redeemer",country:"Brazil",continent:"South America",category:"Historical",rating:4.8,bestTime:"April to October",language:"Portuguese",currency:"Brazilian Real (BRL)",image:"https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=1400&q=85",description:"A monumental Art Deco statue overlooking Rio de Janeiro.",history:"The statue was completed in 1931 and stands atop Corcovado Mountain.",special:"Its elevated position provides views across Rio's mountains, beaches and urban landscape.",attractions:["Corcovado", "Tijuca Forest", "panoramic viewpoints."],experience:"A monumental Art Deco statue overlooking Rio de Janeiro.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:20,name:"Iguazu Falls",country:"Argentina / Brazil",continent:"South America",category:"Beach",rating:4.8,bestTime:"Year-round; water levels vary",language:"Spanish and Portuguese",currency:"Argentine Peso / Brazilian Real",image:"https://images.unsplash.com/photo-1587595431973-160d0d94add1?auto=format&fit=crop&w=1400&q=85",description:"A huge waterfall system surrounded by subtropical rainforest.",history:"The falls have long been part of the cultural landscape of Indigenous communities and are now protected through national parks on both sides of the border.",special:"Hundreds of cascades spread across a wide rainforest setting.",attractions:["Devil's Throat", "walking trails", "rainforest viewpoints."],experience:"A huge waterfall system surrounded by subtropical rainforest.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:21,name:"Galápagos Islands",country:"Ecuador",continent:"South America",category:"Beach",rating:4.8,bestTime:"Year-round depending on conditions",language:"Spanish",currency:"US Dollar (USD)",image:"https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=1400&q=85",description:"An island archipelago famous for distinctive wildlife and volcanic landscapes.",history:"The islands were shaped by volcanic activity and became internationally significant for natural history and conservation.",special:"Unique species and isolated ecosystems make the Galápagos especially important for biodiversity.",attractions:["Wildlife observation", "volcanic landscapes", "beaches", "marine life."],experience:"An island archipelago famous for distinctive wildlife and volcanic landscapes.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:22,name:"Sydney Opera House",country:"Australia",continent:"Oceania",category:"Historical",rating:4.8,bestTime:"September to November and March to May",language:"English",currency:"Australian Dollar (AUD)",image:"https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d1?auto=format&fit=crop&w=1400&q=85",description:"A landmark performing-arts building on Sydney Harbour.",history:"The Sydney Opera House was opened in 1973 after an ambitious international architectural project.",special:"Its sail-like roof forms are among the most recognisable examples of modern architecture.",attractions:["Harbour Bridge", "Opera House", "Circular Quay", "harbour walks."],experience:"A landmark performing-arts building on Sydney Harbour.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:23,name:"Great Barrier Reef",country:"Australia",continent:"Oceania",category:"Beach",rating:4.8,bestTime:"June to October",language:"English",currency:"Australian Dollar (AUD)",image:"https://images.unsplash.com/photo-1544551763-77ef2d0cfc6c?auto=format&fit=crop&w=1400&q=85",description:"A vast coral reef ecosystem along Australia's northeast coast.",history:"The reef system developed over long geological periods and supports diverse marine ecosystems.",special:"Its coral formations and marine biodiversity make it one of Australia's best-known natural attractions.",attractions:["Snorkelling", "diving", "reef islands", "marine wildlife."],experience:"A vast coral reef ecosystem along Australia's northeast coast.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:24,name:"Milford Sound",country:"New Zealand",continent:"Oceania",category:"Adventure",rating:4.8,bestTime:"Year-round; weather changes quickly",language:"English and Māori",currency:"New Zealand Dollar (NZD)",image:"https://images.unsplash.com/photo-1507699622108-4be3abd695ad?auto=format&fit=crop&w=1400&q=85",description:"A dramatic fjord in New Zealand's South Island.",history:"The landscape was carved by glaciers over long geological periods and has deep significance within Māori culture.",special:"Steep cliffs, waterfalls, forests and dark waters create a striking natural environment.",attractions:["Boat cruises", "waterfalls", "mountain views", "rainforest."],experience:"A dramatic fjord in New Zealand's South Island.",tips:"This is a view-only guide. Check local guidance before visiting."},
+{id:25,name:"Bora Bora",country:"French Polynesia",continent:"Oceania",category:"Beach",rating:4.8,bestTime:"May to October",language:"French and Tahitian",currency:"CFP Franc (XPF)",image:"https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=85",description:"A Pacific island known for lagoons, coral reefs and volcanic scenery.",history:"Bora Bora has Polynesian cultural roots and developed into an internationally recognised island destination.",special:"Its lagoon and surrounding volcanic peaks create a distinctive tropical landscape.",attractions:["Lagoon", "Mount Otemanu", "coral reefs", "island villages."],experience:"A Pacific island known for lagoons, coral reefs and volcanic scenery.",tips:"This is a view-only guide. Check local guidance before visiting."}
+];
+
+const foods = [
+{id:1,name:"Biryani",country:"India",continent:"Asia",category:"Main dish",image:"https://images.unsplash.com/photo-1563379091339-03246963d96c?auto=format&fit=crop&w=1200&q=85",calories:"Approx. 180–250 kcal per 100 g",description:"A fragrant rice dish layered with spices, rice and vegetables or meat.",history:"Biryani developed through culinary traditions across the Indian subcontinent, with different cities and regions creating their own styles.",special:"Hyderabadi, Lucknowi, Kolkata and many regional versions differ in spices, preparation methods and ingredients.",ingredients:"Rice, aromatic spices, herbs, onions, vegetables or meat.",taste:"Fragrant, savoury, spicy and rich."},
+{id:2,name:"Masala Dosa",country:"India",continent:"Asia",category:"Breakfast",image:"https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=1200&q=85",calories:"Approx. 150–220 kcal per serving depending on preparation",description:"A crisp fermented rice-and-lentil crepe usually served with potato filling.",history:"Dosa has a long history in South Indian cuisine and became widely known beyond the region through restaurants and street-food culture.",special:"Its crisp texture pairs with spiced potato, sambar and chutneys.",ingredients:"Rice, urad dal, potato, spices and oil.",taste:"Crisp, savoury and mildly tangy."},
+{id:3,name:"Butter Chicken",country:"India",continent:"Asia",category:"Main dish",image:"https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=1400&q=85",calories:"Approx. 180–250 kcal per 100 g",description:"Tender chicken in a creamy tomato-based spiced sauce.",history:"Butter chicken is associated with the culinary traditions of Delhi and the restaurant culture that developed around North Indian cooking.",special:"The combination of tomato, butter, cream and spices creates a smooth and aromatic curry.",ingredients:"Chicken, tomato, butter, cream, ginger, garlic and spices.",taste:"Creamy, mildly spicy and rich."},
+{id:4,name:"Sushi",country:"Japan",continent:"Asia",category:"Main dish",image:"https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=1200&q=85",calories:"Varies widely by style; often 40–100 kcal per piece",description:"Vinegared rice prepared with seafood, vegetables or other toppings.",history:"Japanese sushi developed through changing methods of preserving and serving fish with rice and later evolved into many modern forms.",special:"It highlights careful preparation, balance of texture and clean presentation.",ingredients:"Rice, vinegar, seafood or vegetables, seaweed and condiments.",taste:"Fresh, savoury, mildly acidic and varied by topping."},
+{id:5,name:"Ramen",country:"Japan",continent:"Asia",category:"Noodles",image:"https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=1400&q=85",calories:"Approx. 400–600 kcal per bowl depending on toppings",description:"A noodle soup with broth, toppings and regional variations.",history:"Ramen developed into a major Japanese food culture with regional styles ranging from miso and shoyu to tonkotsu-based preparations.",special:"The broth, noodle texture and toppings can be combined in many ways.",ingredients:"Wheat noodles, broth, vegetables, egg, meat or tofu.",taste:"Savoury, warming and deeply aromatic."},
+{id:6,name:"Dim Sum",country:"China",continent:"Asia",category:"Small plates",image:"https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=1400&q=85",calories:"Varies widely by dish",description:"A broad family of small Cantonese-style dishes traditionally served with tea.",history:"Dim sum grew from teahouse culture and became a social dining tradition featuring steamed, baked and fried small dishes.",special:"The variety of bite-sized dishes encourages sharing and tasting many flavours.",ingredients:"Dough, seafood, meat, vegetables, rice and seasonings.",taste:"Varied from delicate and savoury to crispy and aromatic."},
+{id:7,name:"Pizza Napoletana",country:"Italy",continent:"Europe",category:"Main dish",image:"https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=1200&q=85",calories:"Approx. 200–300 kcal per 100 g",description:"A Neapolitan pizza known for a soft crust, tomato and simple toppings.",history:"Modern pizza culture developed strongly in Naples, where simple ingredients became a globally recognised food tradition.",special:"The balance of dough, tomato, cheese and heat is central to its character.",ingredients:"Wheat dough, tomato, mozzarella, basil and olive oil.",taste:"Lightly charred, savoury, tangy and cheesy."},
+{id:8,name:"Paella",country:"Spain",continent:"Europe",category:"Rice dish",image:"https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1400&q=85",calories:"Approx. 180–250 kcal per 100 g",description:"A Spanish rice dish traditionally associated with Valencia.",history:"Paella developed around rice-growing areas of Valencia and evolved into many seafood, meat and mixed versions.",special:"The wide pan allows rice to cook into a characteristic layer and absorb the flavours of the ingredients.",ingredients:"Rice, saffron, vegetables, seafood or meat.",taste:"Aromatic, savoury and rich."},
+{id:9,name:"Croissant",country:"France",continent:"Europe",category:"Pastry",image:"https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=1200&q=85",calories:"Approx. 230–300 kcal each depending on size",description:"A flaky, layered pastry associated with French bakery culture.",history:"The modern croissant became strongly associated with French baking and is now recognised worldwide.",special:"Its laminated dough creates thin, crisp layers around a soft interior.",ingredients:"Wheat flour, butter, yeast, milk and sugar.",taste:"Buttery, flaky and lightly sweet."},
+{id:10,name:"Injera",country:"Ethiopia",continent:"Africa",category:"Flatbread",image:"https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1400&q=85",calories:"Varies by size and flour composition",description:"A fermented spongy flatbread used with Ethiopian and Eritrean dishes.",history:"Injera has a long culinary history in the Horn of Africa and functions as both food and a utensil during communal meals.",special:"Its slightly sour flavour and porous texture work well with stews and vegetables.",ingredients:"Traditionally teff flour and water.",taste:"Tangy, soft and slightly sour."},
+{id:11,name:"Jollof Rice",country:"West Africa",continent:"Africa",category:"Rice dish",image:"https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1400&q=85",calories:"Approx. 150–230 kcal per 100 g",description:"A celebrated West African rice dish cooked with tomatoes, peppers and spices.",history:"Jollof rice has several national and regional styles, with Nigeria, Ghana, Senegal and other countries developing distinctive preparations.",special:"The dish is strongly connected with celebrations, family gatherings and regional food identity.",ingredients:"Rice, tomatoes, peppers, onions and spices, often with meat or vegetables.",taste:"Tomato-rich, savoury, aromatic and spicy."},
+{id:12,name:"Tagine",country:"Morocco",continent:"Africa",category:"Slow-cooked dish",image:"https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=1400&q=85",calories:"Varies by recipe",description:"A slow-cooked Moroccan dish prepared in a distinctive conical pot.",history:"Tagine cooking developed across North African food traditions and uses slow heat to combine meat, vegetables, fruit and spices.",special:"The cooking vessel helps circulate steam and keeps the dish moist and aromatic.",ingredients:"Vegetables, meat or legumes, preserved lemon, olives and spices.",taste:"Aromatic, savoury and often gently sweet-spiced."},
+{id:13,name:"Tacos",country:"Mexico",continent:"North America",category:"Street food",image:"https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?auto=format&fit=crop&w=1200&q=85",calories:"Often 150–300 kcal per taco depending on filling",description:"Folded tortillas filled with a wide variety of savoury ingredients.",history:"Tacos have deep roots in Mexican food culture and have developed into countless regional forms.",special:"Different regions use different fillings, salsas and tortilla styles.",ingredients:"Corn or flour tortilla, meat, beans, vegetables, salsa and herbs.",taste:"Savoury, spicy, fresh and varied."},
+{id:14,name:"Poutine",country:"Canada",continent:"North America",category:"Comfort food",image:"https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?auto=format&fit=crop&w=1400&q=85",calories:"Often 500+ kcal per serving depending on portion",description:"French fries topped with cheese curds and gravy.",history:"Poutine emerged in Quebec in the mid-20th century and became one of Canada's best-known comfort foods.",special:"The combination of crisp fries, warm gravy and cheese curds creates its characteristic texture.",ingredients:"French fries, cheese curds and gravy.",taste:"Salty, savoury, creamy and rich."},
+{id:15,name:"New York Cheesecake",country:"United States",continent:"North America",category:"Dessert",image:"https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?auto=format&fit=crop&w=1400&q=85",calories:"Approx. 300–450 kcal per slice",description:"A dense, creamy cheesecake associated with New York baking culture.",history:"Cheesecake has older roots, while the New York style developed into a famous version using cream cheese for a dense texture.",special:"Its rich cream-cheese filling and smooth texture are its defining qualities.",ingredients:"Cream cheese, eggs, sugar and crust.",taste:"Creamy, rich and lightly sweet."},
+{id:16,name:"Ceviche",country:"Peru",continent:"South America",category:"Seafood",image:"https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?auto=format&fit=crop&w=1200&q=85",calories:"Usually relatively light, varying by recipe",description:"Fresh seafood prepared with citrus, onions, chilli and herbs.",history:"Ceviche is deeply connected to Peru's coastal food traditions and has many variations across Latin America.",special:"The bright acidity and fresh ingredients make it a distinctive dish of coastal cuisine.",ingredients:"Fresh fish or seafood, lime, onion, chilli and herbs.",taste:"Fresh, citrusy, tangy and spicy."},
+{id:17,name:"Feijoada",country:"Brazil",continent:"South America",category:"Stew",image:"https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=1400&q=85",calories:"Approx. 180–250 kcal per 100 g",description:"A hearty Brazilian black-bean stew traditionally prepared with pork.",history:"Feijoada became an important part of Brazilian culinary culture and is commonly served as a social meal with several accompaniments.",special:"Beans, meat and side dishes create a filling meal with strong regional identity.",ingredients:"Black beans, pork, garlic, onions and seasonings.",taste:"Rich, savoury and hearty."},
+{id:18,name:"Pavlova",country:"Australia / New Zealand",continent:"Oceania",category:"Dessert",image:"https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d1?auto=format&fit=crop&w=1400&q=85",calories:"Varies by portion and toppings",description:"A crisp meringue dessert with a soft centre and fruit topping.",history:"Pavlova is named after Russian ballerina Anna Pavlova and became strongly associated with Australian and New Zealand dessert traditions.",special:"The contrast between crisp meringue, soft centre, cream and fruit is its signature.",ingredients:"Egg whites, sugar, cream and fresh fruit.",taste:"Sweet, crisp, soft and fruity."},
+{id:19,name:"Lamington",country:"Australia",continent:"Oceania",category:"Dessert",image:"https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d1?auto=format&fit=crop&w=1400&q=85",calories:"Approx. 150–250 kcal each depending on size",description:"Small sponge cakes coated in chocolate and coconut.",history:"Lamingtons became a well-known Australian tea-time treat and remain a familiar part of Australian baking culture.",special:"The simple combination of sponge, chocolate coating and coconut makes them distinctive.",ingredients:"Sponge cake, chocolate icing and desiccated coconut.",taste:"Sweet, soft, chocolatey and coconutty."},
+{id:20,name:"Mango Lassi",country:"India",continent:"Asia",category:"Drink",image:"https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=1400&q=85",calories:"Approx. 120–220 kcal per glass depending on ingredients",description:"A creamy yogurt drink blended with ripe mango and aromatic spices.",history:"Lassi has a long history in South Asian food culture, with sweet and savoury versions. Mango lassi is a popular modern variation.",special:"It combines cooling yogurt with the tropical sweetness of mango.",ingredients:"Yogurt, mango, water or milk, sugar and optional cardamom.",taste:"Creamy, sweet, fruity and refreshing."},
+{id:21,name:"Masala Chai",country:"India",continent:"Asia",category:"Drink",image:"https://images.unsplash.com/photo-1594631252845-29fc4cc8cde9?auto=format&fit=crop&w=1200&q=85",calories:"Often 50–150 kcal per cup depending on milk and sugar",description:"Black tea simmered with milk and aromatic spices.",history:"Tea became deeply embedded in Indian food culture during the modern tea trade, while home-style masala chai developed many regional forms.",special:"The combination of tea, milk and spices creates a warming, aromatic drink.",ingredients:"Black tea, milk, ginger, cardamom, cinnamon and other spices.",taste:"Warm, spicy, creamy and aromatic."},
+{id:22,name:"Fresh Lime Soda",country:"India",continent:"Asia",category:"Drink",image:"https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=1400&q=85",calories:"Low to moderate depending on added sugar",description:"A refreshing lime drink made with soda, lime and optional sweetener.",history:"Fresh lime soda became a familiar refreshment in Indian cafés, restaurants and street-food settings.",special:"It can be served sweet, salty or sweet-and-salty and is especially popular in hot weather.",ingredients:"Lime, soda water, sugar or salt and ice.",taste:"Citrusy, fizzy, refreshing and adjustable from sweet to salty."},
+{id:23,name:"Mojito Mocktail",country:"Cuba-inspired",continent:"North America",category:"Mocktail",image:"https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?auto=format&fit=crop&w=1400&q=85",calories:"Usually 30–150 kcal depending on sweetener",description:"A non-alcoholic mint and lime cooler inspired by the classic mojito.",history:"The mojito is associated with Cuba; alcohol-free versions adapt the mint, lime and sparkling character into a refreshing mocktail.",special:"Fresh mint and lime give the drink a bright aroma and cooling flavour.",ingredients:"Mint, lime, soda, ice and optional sugar or syrup.",taste:"Minty, citrusy, fizzy and refreshing."}
+];
+
+/* =========================================================
+   UI STATE
+========================================================= */
+let selectedContinent="All";
+let selectedCategory="All";
+let selectedFoodContinent="All";
+let selectedFoodCategory="All";
+let searchTerm="";
+let favorites=JSON.parse(localStorage.getItem("visitvibeFavorites")||"[]");
+
+/* Greeting: changes automatically according to visitor's local time. */
+function setGreeting(){
+  const h=new Date().getHours();
+  let text="Good evening";
+  let icon="🌆";
+  if(h>=5 && h<12){text="Good morning";icon="🌅"}
+  else if(h>=12 && h<17){text="Good afternoon";icon="☀️"}
+  else if(h>=17 && h<21){text="Good evening";icon="🌆"}
+  else{text="Good night";icon="🌙"}
+  document.getElementById("greeting").textContent=`${icon} ${text} — welcome to VisitVibe`;
+}
+setGreeting();
+
+/* Hero slider */
+let slide=0;
+const slides=[...document.querySelectorAll(".hero-slide")];
+const dots=[...document.querySelectorAll(".hero-dot")];
+setInterval(()=>{
+  slides[slide].classList.remove("active");dots[slide].classList.remove("active");
+  slide=(slide+1)%slides.length;
+  slides[slide].classList.add("active");dots[slide].classList.add("active");
+},5000);
+
+/* Helpers */
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+const imgFallback="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80";
+
+// REAL FOOD PHOTO LOADER
+// Loads actual food photographs from Wikimedia's public article/media services.
+// No emoji or generated food illustrations are used.
+const realFoodPhotoCache = new Map();
+const foodPhotoLoading = new Map();
+const foodPhotoFallback = "https://commons.wikimedia.org/wiki/Special:FilePath/Food%20photography%20%2817520450443%29.jpg?width=900";
+
+function foodSearchName(food){
+  const aliases={
+    "Chicken Biryani":"Chicken biryani","Biryani":"Biryani","Butter Chicken":"Butter chicken","Masala Dosa":"Masala dosa","Idli":"Idli","Sambar":"Sambar Indian dish","Dal Tadka":"Dal tadka","Palak Paneer":"Palak paneer","Paneer Tikka":"Paneer tikka","Roti":"Roti chapati","Naan":"Naan bread","Samosa":"Samosa","Pani Puri":"Panipuri","Pav Bhaji":"Pav bhaji","Poha":"Poha","Upma":"Upma","Curd Rice":"Curd rice","Gulab Jamun":"Gulab jamun","Jalebi":"Jalebi","Mango Lassi":"Mango lassi","Masala Chai":"Masala chai","Filter Coffee":"Filter coffee","Nimbu Pani":"Nimbu pani","Mango Juice":"Mango juice","Watermelon Juice":"Watermelon juice","Virgin Mojito":"Virgin mojito","Mango Mocktail":"Mango mocktail","Pizza Margherita":"Pizza Margherita","Pasta Carbonara":"Spaghetti alla carbonara","Fish and Chips":"Fish and chips","Mac and Cheese":"Macaroni and cheese","Poke Bowl":"Poke bowl"
+  };
+  return aliases[food.name] || food.name;
+}
+
+async function fetchRealFoodPhoto(food){
+  const key=food.name;
+  if(realFoodPhotoCache.has(key)) return realFoodPhotoCache.get(key);
+  if(foodPhotoLoading.has(key)) return foodPhotoLoading.get(key);
+  const promise=(async()=>{
+    try{
+      const title=encodeURIComponent(foodSearchName(food).replace(/\s+/g,'_'));
+      const page=await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${title}`,{headers:{Accept:'application/json'}});
+      if(page.ok){
+        const data=await page.json();
+        const src=data?.thumbnail?.source || data?.originalimage?.source;
+        if(src){realFoodPhotoCache.set(key,src);return src;}
+      }
+      const q=encodeURIComponent(`${foodSearchName(food)} food`);
+      const api=`https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${q}&gsrnamespace=6&gsrlimit=5&prop=imageinfo&iiprop=url&iiurlwidth=1000&format=json&origin=*`;
+      const res=await fetch(api,{headers:{Accept:'application/json'}});
+      if(res.ok){
+        const data=await res.json();
+        const pages=Object.values(data?.query?.pages||{});
+        const image=pages.find(x=>x.imageinfo?.[0]?.thumburl||x.imageinfo?.[0]?.url);
+        const src=image?.imageinfo?.[0]?.thumburl||image?.imageinfo?.[0]?.url;
+        if(src){realFoodPhotoCache.set(key,src);return src;}
+      }
+    }catch(e){console.warn('Food photo lookup failed:',food.name,e);}
+    realFoodPhotoCache.set(key,foodPhotoFallback);
+    return foodPhotoFallback;
+  })();
+  foodPhotoLoading.set(key,promise);
+  const result=await promise;
+  foodPhotoLoading.delete(key);
+  return result;
+}
+
+async function loadRealFoodPhotos(){
+  const imgs=[...document.querySelectorAll('.food-photo')];
+  for(let i=0;i<imgs.length;i+=6){
+    await Promise.all(imgs.slice(i,i+6).map(async img=>{
+      const food=foods.find(f=>f.id===Number(img.dataset.id));
+      if(!food)return;
+      img.src=await fetchRealFoodPhoto(food);
+    }));
+  }
+}
+
+function scrollToSection(id){
+  document.getElementById(id)?.scrollIntoView({behavior:"smooth"});
+  document.getElementById("navLinks").classList.remove("show");
+}
+function toggleMenu(){document.getElementById("navLinks").classList.toggle("show")}
+function showToast(msg){
+  const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
+  clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove("show"),2600);
+}
+function closeModal(id){document.getElementById(id).classList.remove("show")}
+function showProfile(){document.getElementById("profileModal").classList.add("show")}
+
+window.addEventListener("click",e=>{
+  if(e.target.classList.contains("modal"))e.target.classList.remove("show");
+});
+
+/* =========================================================
+   DESTINATION RENDERING
+========================================================= */
+function renderContinents(){
+  const names=["Asia","Europe","Africa","North America","South America","Oceania"];
+  const images={
+    Asia:"https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=700&q=80",
+    Europe:"https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=700&q=80",
+    Africa:"https://images.unsplash.com/photo-1516426122078-c23e76319801?auto=format&fit=crop&w=700&q=80",
+    "North America":"https://images.unsplash.com/photo-1485871981521-5b1fd3805eee?auto=format&fit=crop&w=700&q=80",
+    "South America":"https://images.unsplash.com/photo-1526392060635-9d6019884377?auto=format&fit=crop&w=700&q=80",
+    Oceania:"https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d1?auto=format&fit=crop&w=700&q=80" 
+  }; 
+  document.getElementById("continentGrid").innerHTML=names.map(n=>{ 
+    const count=destinations.filter(d=>d.continent===n).length; 
+    return `<div class="continent-card" onclick="chooseContinent('${n}')"> 
+      <img src="${images[n]}" alt="${esc(n)}" onerror="this.src='${imgFallback}'"> 
+      <div class="continent-info"><h3>${esc(n)}</h3><span>${count} featured places</span></div> 
+    </div>` 
+  }).join(""); 
+} 
+ 
+function chooseContinent(c){ 
+  selectedContinent=c;selectedCategory="All";searchTerm=""; 
+  document.getElementById("heroSearch").value=""; 
+  renderPlaceFilters();renderDestinations();scrollToSection("explore"); 
+} 
+ 
+function placeCard(d){ 
+  const fav=favorites.includes(d.id); 
+  return `<article class="card"> 
+    <div class="card-image"> 
+      <img src="${d.image}" alt="${esc(d.name)}" onerror="this.src='${imgFallback}'"> 
+      <button class="favorite ${fav?"active":""}" onclick="toggleFavorite(${d.id})">${fav?"♥":"♡"}</button> 
+      <span class="card-badge">${esc(d.category)}</span> 
+    </div> 
+    <div class="card-body"> 
+      <div class="card-location">📍 ${esc(d.country)} · ${esc(d.continent)}</div> 
+      <h3>${esc(d.name)}</h3> 
+      <div class="rating">★ ${d.rating}</div> 
+      <p class="card-desc">${esc(d.description)}</p> 
+      <button class="card-action" onclick="openDestination(${d.id})">View place details →</button> 
+    </div> 
+  </article>`; 
+} 
+ 
+function renderTrending(){ 
+  document.getElementById("trendingGrid").innerHTML=destinations.slice(0,8).map(placeCard).join(""); 
+} 
+ 
+function renderPlaceFilters(){ 
+  const continents=["All",...new Set(destinations.map(d=>d.continent))]; 
+  const categories=["All",...new Set(destinations.map(d=>d.category))]; 
+  document.getElementById("continentFilters").innerHTML=continents.map(c=>`<button class="filter ${selectedContinent===c?"active":""}" onclick="setPlaceContinent('${esc(c)}')">${esc(c)}</button>`).join(""); 
+  document.getElementById("categoryFilters").innerHTML=categories.map(c=>`<button class="filter ${selectedCategory===c?"active":""}" onclick="setPlaceCategory('${esc(c)}')">${esc(c)}</button>`).join(""); 
+} 
+function setPlaceContinent(c){selectedContinent=c;renderPlaceFilters();renderDestinations()} 
+function setPlaceCategory(c){selectedCategory=c;renderPlaceFilters();renderDestinations()} 
+function renderDestinations(){ 
+  const q=searchTerm.toLowerCase(); 
+  const data=destinations.filter(d=> 
+    (selectedContinent==="All"||d.continent===selectedContinent) && 
+    (selectedCategory==="All"||d.category===selectedCategory) && 
+    (!q||[d.name,d.country,d.continent,d.category,d.description,d.special].join(" ").toLowerCase().includes(q)) 
+  ); 
+  document.getElementById("placeCount").textContent=`Showing ${data.length} place${data.length===1?"":"s"} in the current view.`; 
+  document.getElementById("destinationGrid").innerHTML=data.length?data.map(placeCard).join(""):`<div class="empty"><h3>No place found</h3><p>Try another country, city, continent or category.</p></div>`; 
+} 
+ 
+function openDestination(id){ 
+  const d=destinations.find(x=>x.id===id);if(!d)return; 
+  document.getElementById("detailsContent").innerHTML=` 
+    <div class="details-hero"> 
+      <img src="${d.image}" alt="${esc(d.name)}" onerror="this.src='${imgFallback}'"> 
+      <div class="details-title"><div>${esc(d.country)} · ${esc(d.category)}</div><h2>${esc(d.name)}</h2></div> 
+    </div> 
+    <div class="details-content"> 
+      <p class="details-intro">${esc(d.description)}</p> 
+      <div class="details-layout"> 
+        <div> 
+          <div class="detail-section"><h3>📜 History</h3><p>${esc(d.history)}</p></div> 
+          <div class="detail-section"><h3>✨ What makes it special?</h3><p>${esc(d.special)}</p></div> 
+          <div class="detail-section"><h3>📍 Highlights</h3><ul>${d.attractions.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div> 
+          <div class="detail-section"><h3>🧭 Experience</h3><p>${esc(d.experience)}</p></div> 
+          <div class="detail-section"><h3>💡 Visitor note</h3><p>${esc(d.tips)}</p></div> 
+        </div> 
+        <div> 
+          <div class="info-grid"> 
+            <div class="info-box"><strong>Best time</strong><span>${esc(d.bestTime)}</span></div> 
+            <div class="info-box"><strong>Language</strong><span>${esc(d.language)}</span></div> 
+            <div class="info-box"><strong>Currency</strong><span>${esc(d.currency)}</span></div> 
+            <div class="info-box"><strong>Region</strong><span>${esc(d.continent)}</span></div> 
+          </div> 
+          <div class="map-placeholder" style="margin-top:15px"> 
+            <div><div style="font-size:42px">🗺️</div><strong>Location view</strong><br><span>Map integration is intentionally not connected in this view-only demo.</span></div> 
+          </div> 
+        </div> 
+      </div> 
+    </div>`; 
+  document.getElementById("detailsModal").classList.add("show");
+  fetchRealFoodPhoto(f).then(src=>{const im=document.getElementById("foodDetailImage");if(im)im.src=src;});
+} 
+ 
+/* ========================================================= 
+   FOOD RENDERING 
+========================================================= */ 
+function foodCard(f){
+  return `<article class="card food-card">
+    <div class="card-image"><img class="food-photo" data-id="${f.id}" src="${foodPhotoFallback}" alt="Real photo of ${esc(f.name)}" decoding="async"><span class="card-badge">${esc(f.category)}</span></div>
+    <div class="card-body">
+      <div class="card-location">🍽️ ${esc(f.country)} · ${esc(f.continent)}</div>
+      <h3>${esc(f.name)}</h3>
+      <span class="food-kcal">${esc(f.calories)}</span>
+      <p class="card-desc">${esc(f.description)}</p>
+      <div class="food-tags"><span>Origin</span><span>${esc(f.category)}</span><span>${esc(f.taste)}</span></div>
+      <button class="card-action" onclick="openFood(${f.id})">View food details →</button>
+    </div>
+  </article>`;
+}
+function renderFoodFilters(){ 
+  const continents=["All",...new Set(foods.map(f=>f.continent))]; 
+  const categories=["All",...new Set(foods.map(f=>f.category))]; 
+  document.getElementById("foodContinentFilters").innerHTML=continents.map(c=>`<button class="filter ${selectedFoodContinent===c?"active":""}" onclick="setFoodContinent('${esc(c)}')">${esc(c)}</button>`).join(""); 
+  document.getElementById("foodCategoryFilters").innerHTML=categories.map(c=>`<button class="filter ${selectedFoodCategory===c?"active":""}" onclick="setFoodCategory('${esc(c)}')">${esc(c)}</button>`).join(""); 
+} 
+function setFoodContinent(c){selectedFoodContinent=c;renderFoodFilters();renderFoods()} 
+function setFoodCategory(c){selectedFoodCategory=c;renderFoodFilters();renderFoods()} 
+function renderFoods(){ 
+  const q=searchTerm.toLowerCase(); 
+  const data=foods.filter(f=> 
+    (selectedFoodContinent==="All"||f.continent===selectedFoodContinent) && 
+    (selectedFoodCategory==="All"||f.category===selectedFoodCategory) && 
+    (!q||[f.name,f.country,f.continent,f.category,f.description,f.special,f.ingredients].join(" ").toLowerCase().includes(q)) 
+  ); 
+  document.getElementById("foodCount").textContent=`Showing ${data.length} food item${data.length===1?"":"s"} in the current view.`; 
+  document.getElementById("foodGrid").innerHTML=data.length?data.map(foodCard).join(""):`<div class="empty"><h3>No food found</h3><p>Try another dish, country or food category.</p></div>`;
+  if(data.length) loadRealFoodPhotos();
+} 
+function openFood(id){ 
+  const f=foods.find(x=>x.id===id);if(!f)return; 
+  document.getElementById("detailsContent").innerHTML=` 
+    <div class="details-hero"> 
+      <img id="foodDetailImage" src="${foodPhotoFallback}" alt="Real photo of ${esc(f.name)}"> 
+      <div class="details-title"><div>${esc(f.country)} · ${esc(f.category)}</div><h2>${esc(f.name)}</h2></div> 
+    </div> 
+    <div class="details-content"> 
+      <p class="details-intro">${esc(f.description)}</p> 
+      <div class="details-layout"> 
+        <div> 
+          <div class="detail-section"><h3>📜 Food history</h3><p>${esc(f.history)}</p></div> 
+          <div class="detail-section"><h3>✨ What makes it special?</h3><p>${esc(f.special)}</p></div> 
+          <div class="detail-section"><h3>🥣 Common ingredients</h3><p>${esc(f.ingredients)}</p></div> 
+          <div class="detail-section"><h3>👅 Taste profile</h3><p>${esc(f.taste)}</p></div> 
+        </div> 
+        <div> 
+          <div class="info-grid"> 
+            <div class="info-box"><strong>Country / region</strong><span>${esc(f.country)}</span></div> 
+            <div class="info-box"><strong>Category</strong><span>${esc(f.category)}</span></div> 
+            <div class="info-box"><strong>Calories</strong><span>${esc(f.calories)}</span></div> 
+            <div class="info-box"><strong>Continent</strong><span>${esc(f.continent)}</span></div> 
+          </div> 
+          <div class="map-placeholder" style="margin-top:15px"> 
+            <div><div style="font-size:42px">🍴</div><strong>Food discovery</strong><br><span>Nutrition values are approximate and vary by recipe and serving.</span></div> 
+          </div> 
+        </div> 
+      </div> 
+    </div>`; 
+  document.getElementById("detailsModal").classList.add("show"); 
+} 
+ 
+/* ========================================================= 
+   FAVORITES 
+========================================================= */ 
+function toggleFavorite(id){ 
+  favorites=favorites.includes(id)?favorites.filter(x=>x!==id):[...favorites,id]; 
+  localStorage.setItem("visitvibeFavorites",JSON.stringify(favorites)); 
+  renderTrending();renderDestinations();renderFavorites(); 
+  showToast(favorites.includes(id)?"Added to favorites":"Removed from favorites"); 
+} 
+function renderFavorites(){ 
+  const data=destinations.filter(d=>favorites.includes(d.id)); 
+  document.getElementById("favoritesGrid").innerHTML=data.length?data.map(placeCard).join(""):`<div class="empty"><h3>No favorites yet</h3><p>Click the ♡ button on any destination to save it in this browser.</p></div>`; 
+} 
+function showFavorites(){renderFavorites();scrollToSection("favoritesSection")} 
+ 
+/* ========================================================= 
+   GLOBAL SEARCH 
+========================================================= */ 
+function globalSearch(){ 
+  const q=document.getElementById("heroSearch").value.trim(); 
+  searchTerm=q; 
+  selectedContinent="All";selectedCategory="All"; 
+  selectedFoodContinent="All";selectedFoodCategory="All"; 
+  renderPlaceFilters();renderDestinations();renderFoodFilters();renderFoods(); 
+  const place=destinations.find(d=>[d.name,d.country].join(" ").toLowerCase().includes(q.toLowerCase())); 
+  const food=foods.find(f=>[f.name,f.country].join(" ").toLowerCase().includes(q.toLowerCase())); 
+  if(q && place){scrollToSection("explore");showToast(`Showing results for "${q}"`)} 
+  else if(q && food){scrollToSection("foods");showToast(`Showing food results for "${q}"`)} 
+  else if(q){scrollToSection("explore");showToast(`Searching VisitVibe for "${q}"`)} 
+  else{scrollToSection("explore")} 
+} 
+ 
+function filterCategory(c){selectedCategory=c;renderPlaceFilters();renderDestinations();scrollToSection("explore")} 
+function demoSubscribe(){ 
+  const value=document.getElementById("newsletterEmail").value.trim(); 
+  if(!value){showToast("Enter an email for the demo.");return} 
+  showToast("Demo only — no email was sent or stored."); 
+  document.getElementById("newsletterEmail").value=""; 
+} 
+ 
+/* Initial render */ 
+renderContinents(); 
+renderTrending(); 
+renderPlaceFilters(); 
+renderDestinations(); 
+renderFoodFilters(); 
+renderFoods(); 
+renderFavorites(); 
+</script> 
+</body> 
+</html>
